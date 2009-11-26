@@ -28,8 +28,7 @@ public class AdminListener extends Listener {
 		if (consumer != null)
 		    consumer.canRun(canRun);
 		this.canRun(canRun);
-		if (!canRun)
-		    reader.close();
+		reader.close();
 
 	    }
 	} catch (IOException e) {
