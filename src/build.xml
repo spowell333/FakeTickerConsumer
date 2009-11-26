@@ -4,22 +4,33 @@
         <delete dir="build"/>
     </target>
 
-    <target name="compile">
+    <path id="base.path">
+      <pathelement path="${classpath}"/>
+      <fileset dir="lib">
+        <include name="*.jar"/>
+      </fileset>
+      <pathelement location="classes"/>
+    </path>
+	
+    <target name="compile" depends="clean">
         <mkdir dir="build/classes"/>
-        <javac srcdir="." destdir="build/classes"/>
+        <javac classpathref="base.path" srcdir="." destdir="build/classes"/>
     </target>
 
-    <target name="jar">
+    <target name="jar" depends="compile">
         <mkdir dir="build/jar"/>
         <jar destfile="build/jar/Consumer.jar" basedir="build/classes">
-            <manifest>
+        	<zipfileset src="lib/ojdbc14.jar" />
+        	<manifest>
                 <attribute name="Main-Class" value="net.sqlhacker.FakeTickerConsumer.Runner"/>
             </manifest>
         </jar>
     </target>
 
-    <target name="run">
-        <java jar="build/jar/Consumer.jar" fork="true"/>
+    <target name="run" depends="jar">
+        <java jar="build/jar/Consumer.jar" fork="true">
+    		<arg value="{JDBC_URL : &quot;jdbc:oracle:thin:@192.168.1.2:1521:&quot;, DB_USER  : &quot;system&quot;, DB_PASS  : &quot;manager&quot;}"/>
+      	</java>
     </target>
 
 </project>
